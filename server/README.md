@@ -17,15 +17,17 @@
 Create a new user account.
 
 #### Request Body
+
 ```json
 {
-    "name": "string",
-    "email": "string",
-    "password": "string"
+  "name": "string",
+  "email": "string",
+  "password": "string"
 }
 ```
 
 #### Required Fields
+
 - `name`: User's full name
 - `email`: Valid email address
 - `password`: User's password
@@ -33,45 +35,49 @@ Create a new user account.
 #### Response
 
 ##### Success (201 Created)
+
 ```json
 {
-    "success": true,
-    "message": "User created successfully",
-    "user": {
-        "_id": "string",
-        "name": "string",
-        "email": "string",
-        "isVerified": false,
-        "lastLogin": "datetime",
-        "createdAt": "datetime",
-        "updatedAt": "datetime"
-    }
+  "success": true,
+  "message": "User created successfully",
+  "user": {
+    "_id": "string",
+    "name": "string",
+    "email": "string",
+    "isVerified": false,
+    "lastLogin": "datetime",
+    "createdAt": "datetime",
+    "updatedAt": "datetime"
+  }
 }
 ```
 
 ##### Error Cases
 
 ###### Missing Fields (400 Bad Request)
+
 ```json
 {
-    "error": {
-        "success": false,
-        "message": "All fields are required"
-    }
+  "error": {
+    "success": false,
+    "message": "All fields are required"
+  }
 }
 ```
 
 ###### User Already Exists (400 Bad Request)
+
 ```json
 {
-    "error": {
-        "success": false,
-        "message": "User already exists"
-    }
+  "error": {
+    "success": false,
+    "message": "User already exists"
+  }
 }
 ```
 
 #### Notes
+
 - Password is automatically hashed before storage
 - A verification token is generated and stored
 - JWT token is set in HTTP-only cookie
@@ -84,57 +90,63 @@ Create a new user account.
 Verify a user's email address using the verification code sent during registration.
 
 #### Request Body
+
 ```json
 {
-    "code": "123456"    // Example of 6-digit verification code
+  "code": "123456" // Example of 6-digit verification code
 }
 ```
 
 #### Required Fields
+
 - `code`: 6-digit verification code sent to user's email during registration
 
 #### Response
 
 ##### Success (200 OK)
+
 ```json
 {
-    "success": true,
-    "message": "Email verified successfully",
-    "user": {
-        "_id": "string",
-        "name": "string",
-        "email": "string",
-        "isVerified": true,
-        "lastLogin": "datetime",
-        "createdAt": "datetime",
-        "updatedAt": "datetime"
-    }
+  "success": true,
+  "message": "Email verified successfully",
+  "user": {
+    "_id": "string",
+    "name": "string",
+    "email": "string",
+    "isVerified": true,
+    "lastLogin": "datetime",
+    "createdAt": "datetime",
+    "updatedAt": "datetime"
+  }
 }
 ```
 
 ##### Error Cases
 
 ###### Invalid Verification Code (400 Bad Request)
+
 ```json
 {
-    "error": {
-        "success": false,
-        "message": "Invalid verification code"
-    }
+  "error": {
+    "success": false,
+    "message": "Invalid verification code"
+  }
 }
 ```
 
 ###### Server Error (400 Bad Request)
+
 ```json
 {
-    "error": {
-        "success": false,
-        "message": "Error message details"
-    }
+  "error": {
+    "success": false,
+    "message": "Error message details"
+  }
 }
 ```
 
 #### Verification Process
+
 1. User receives 6-digit code via email after registration
 2. Code must be submitted within 24 hours of registration
 3. Upon successful verification:
@@ -144,6 +156,7 @@ Verify a user's email address using the verification code sent during registrati
    - User profile is returned in response
 
 #### Security Notes
+
 - Verification code expires after 24 hours
 - Code is single-use only
 - Invalid attempts are logged
@@ -152,6 +165,7 @@ Verify a user's email address using the verification code sent during registrati
 ## Login and Logout Endpoints
 
 ### Login `/api/auth/login`
+
 - **Method**: `POST`
 - **Description**: Authenticates a user and returns a token in an HTTP-only cookie
 - **Request Body**:
@@ -189,6 +203,7 @@ Verify a user's email address using the verification code sent during registrati
     ```
 
 ### Logout `/api/auth/logout`
+
 - **Method**: `POST`
 - **Description**: Logs out the user by clearing the authentication cookie
 - **Request Body**: None required
@@ -205,6 +220,7 @@ Verify a user's email address using the verification code sent during registrati
 ## Password Reset Endpoints
 
 ### Forgot Password `/api/auth/forgot-password`
+
 - **Method**: `POST`
 - **Description**: Initiates password reset by sending a reset link to user's email
 - **Request Body**:
@@ -244,6 +260,7 @@ Verify a user's email address using the verification code sent during registrati
     ```
 
 ### Reset Password `/api/auth/reset-password/:token`
+
 - **Method**: `POST`
 - **Description**: Resets user's password using the token received via email
 - **URL Parameters**:
@@ -285,7 +302,86 @@ Verify a user's email address using the verification code sent during registrati
     ```
 
 #### Notes
+
 - Reset token expires after 1 hour
 - A confirmation email is sent after successful password reset
 - Previous tokens are invalidated after password reset
 - Reset link is single-use only
+
+## Check Authentication Status
+
+### GET `/api/auth/check-auth`
+
+Verify if a user is currently authenticated and retrieve their information.
+
+#### Authentication
+
+- Requires a valid JWT token in either:
+  - HTTP-only cookie named 'token'
+  - Authorization header as Bearer token
+
+#### Headers
+
+```
+Authorization: Bearer <token>
+```
+
+#### Response
+
+##### Success (200 OK)
+
+```json
+{
+    "success": true,
+    "message": "User found",
+    "user": {
+        "_id": "string",
+        "name": "string",
+        "email": "string",
+        "isVerified": boolean,
+        "lastLogin": "datetime",
+        "createdAt": "datetime",
+        "updatedAt": "datetime"
+    }
+}
+```
+
+##### Error Cases
+
+###### Unauthorized (401 Unauthorized)
+
+```json
+{
+  "error": {
+    "success": false,
+    "message": "Unauthorized"
+  }
+}
+```
+
+###### User Not Found (400 Bad Request)
+
+```json
+{
+  "success": false,
+  "message": "User not found"
+}
+```
+
+###### Server Error (400 Bad Request)
+
+```json
+{
+  "error": {
+    "success": false,
+    "message": "Error message details"
+  }
+}
+```
+
+#### Notes
+
+- Token validation is performed via middleware
+- Password field is excluded from the response
+- Used for maintaining session state and retrieving current user details
+- Typically called on application startup or page refresh
