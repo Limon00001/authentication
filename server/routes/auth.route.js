@@ -9,13 +9,14 @@
 import express from "express";
 
 // Internal Dependencies
-import { signup } from "../controllers/auth.controller.js";
+import { signup, verifyEmail } from "../controllers/auth.controller.js";
 
 // Router
 const authRouter = express.Router();
 
 // Routes
 authRouter.post("/signup", signup);
+authRouter.post("/verify-email", verifyEmail);
 
 // Export
 export default authRouter;
