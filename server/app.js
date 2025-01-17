@@ -16,7 +16,6 @@ import authRouter from './routes/auth.route.js';
 // App Initialize
 const app = express();
 
-
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
