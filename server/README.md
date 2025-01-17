@@ -1,3 +1,13 @@
+<div align="center">
+
+![Contributor](https://img.shields.io/badge/Contributor-000?style=flat&logo=c&logoColor=whitesmoke) ![Node JS](https://img.shields.io/badge/Node-339933?style=flat&logo=node.js&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) ![NPM](https://img.shields.io/badge/Npm-CC342D?style=flat&logo=npm&logoColor=white)
+![GitHub](https://img.shields.io/badge/Github-000?style=flat&logo=github&logoColor=white) ![MongoDB](https://img.shields.io/badge/-MongoDB-4DB33D?style=flat&logo=mongodb&logoColor=white) ![Express.js](https://img.shields.io/badge/-Express.js-000000?style=flat&logo=express&logoColor=white) ![VS Code](https://img.shields.io/badge/-VS%20Code-007ACC?style=flat&logo=visual-studio-code&logoColor=white) ![Git](https://img.shields.io/badge/-Git-F05032?style=flat&logo=git&logoColor=white)
+
+</div>
+
+<br />
+<br />
+
 # Authentication API Documentation
 
 ## Signup Endpoint
@@ -191,3 +201,91 @@ Verify a user's email address using the verification code sent during registrati
       "message": "Logged out successfully"
     }
     ```
+
+## Password Reset Endpoints
+
+### Forgot Password `/api/auth/forgot-password`
+- **Method**: `POST`
+- **Description**: Initiates password reset by sending a reset link to user's email
+- **Request Body**:
+  ```json
+  {
+    "email": "user@example.com"
+  }
+  ```
+- **Success Response**:
+  - **Code**: 200
+  - **Content**:
+    ```json
+    {
+      "success": true,
+      "message": "Password reset email sent successfully"
+    }
+    ```
+- **Error Responses**:
+  - **Code**: 400
+  - **Missing Email**:
+    ```json
+    {
+      "error": {
+        "success": false,
+        "message": "Email is required"
+      }
+    }
+    ```
+  - **User Not Found**:
+    ```json
+    {
+      "error": {
+        "success": false,
+        "message": "User does not exist"
+      }
+    }
+    ```
+
+### Reset Password `/api/auth/reset-password/:token`
+- **Method**: `POST`
+- **Description**: Resets user's password using the token received via email
+- **URL Parameters**:
+  - `token`: Reset token received in email
+- **Request Body**:
+  ```json
+  {
+    "password": "newPassword123"
+  }
+  ```
+- **Success Response**:
+  - **Code**: 200
+  - **Content**:
+    ```json
+    {
+      "success": true,
+      "message": "Password reset successfully"
+    }
+    ```
+- **Error Responses**:
+  - **Code**: 400
+  - **Invalid Token**:
+    ```json
+    {
+      "error": {
+        "success": false,
+        "message": "Invalid or expired link"
+      }
+    }
+    ```
+  - **Missing Password**:
+    ```json
+    {
+      "error": {
+        "success": false,
+        "message": "Password is required"
+      }
+    }
+    ```
+
+#### Notes
+- Reset token expires after 1 hour
+- A confirmation email is sent after successful password reset
+- Previous tokens are invalidated after password reset
+- Reset link is single-use only

@@ -9,10 +9,10 @@
 import bcrypt from "bcryptjs";
 
 // Internal Dependencies
-import { sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/emails.js";
+import { sendPasswordResetEmail, sendPasswordResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/emails.js";
 import User from "../models/user.model.js";
 import generateTokenAndSetCookie from "../utils/generateTokenAndSetCookie.js";
-import generateVerificationToken from '../utils/generateVerificationCode.js';
+import { generateToken, generateVerificationToken } from '../utils/generateVerificationCode.js';
 
 // Registration
 const signup = async (req, res) => {
@@ -68,7 +68,7 @@ const signup = async (req, res) => {
 
         // Remove password
         user.password = undefined;
-        
+
         // Response
         return res.status(201).json({
             success: true,
@@ -91,9 +91,9 @@ const verifyEmail = async (req, res) => {
     const { code } = req.body;
 
     try {
-        const user = await User.findOne({ 
-            verificationToken: code, 
-            verificationTokenExpiresAt: { $gt: Date.now() } 
+        const user = await User.findOne({
+            verificationToken: code,
+            verificationTokenExpiresAt: { $gt: Date.now() }
         });
 
         // If user is not found
@@ -119,7 +119,7 @@ const verifyEmail = async (req, res) => {
 
         // Remove password
         user.password = undefined;
-        
+
         // Response
         return res.status(200).json({
             success: true,
@@ -159,7 +159,7 @@ const login = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 error: {
-                    success: false, 
+                    success: false,
                     message: "User does not exist"
                 }
             });
@@ -219,6 +219,133 @@ const logout = async (req, res) => {
     });
 };
 
+// Forgot Password
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // Validation
+        if (!email) {
+            return res.status(400).json({
+                error: {
+                    success: false,
+                    message: "Email is required"
+                }
+            });
+        }
+
+        const user = await User.findOne({ email });
+
+        // If user does not exist
+        if (!user) {
+            return res.status(400).json({
+                error: {
+                    success: false,
+                    message: "User does not exist"
+                }
+            });
+        };
+
+        // Generate token
+        const resetToken = generateToken(32);
+
+        // Update user information
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpiresAt = Date.now() + 1 * 60 * 60 * 1000;     // 1 hour
+
+        // Save the user
+        await user.save();
+
+        // Send email
+        await sendPasswordResetEmail(user.email, `${process.env.FRONTEND_URL}/reset-password/${resetToken}`);
+
+        // Response
+        return res.status(200).json({
+            success: true,
+            message: "Password reset email sent successfully"
+        });
+    } catch (error) {
+        // Response error
+        return res.status(400).json({
+            error: {
+                success: false,
+                message: error.message
+            }
+        });
+    }
+};
+
+const resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    try {
+        // Token Validation
+        if (!token) {
+            return res.status(400).json({
+                error: {
+                    success: false,
+                    message: "Invalid link"
+                }
+            });
+        }
+
+        // Password Validation
+        if (!password) {
+            return res.status(400).json({
+                error: {
+                    success: false,
+                    message: "Password is required"
+                }
+            });
+        }
+
+        // Check if token is valid
+        const user = await User.findOne({ 
+            resetPasswordToken: token, 
+            resetPasswordExpiresAt: { $gt: Date.now() } 
+        });
+
+        // If token is not valid
+        if (!user) {
+            return res.status(400).json({
+                error: {
+                    success: false,
+                    message: "Invalid or expired link"
+                }
+            });
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SALT));
+
+        // Update user information
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpiresAt = undefined;
+
+        // Save the user
+        await user.save();
+
+        // Send email
+        await sendPasswordResetSuccessEmail(user.email);
+
+        // Response
+        return res.status(200).json({
+            success: true,
+            message: "Password reset successfully"
+        });
+    } catch (error) {
+        // Response error
+        return res.status(400).json({
+            error: {
+                success: false,
+                message: error.message
+            }
+        });
+    }
+}
+
 // Export
-export { login, logout, signup, verifyEmail };
+export { forgotPassword, login, logout, resetPassword, signup, verifyEmail };
 

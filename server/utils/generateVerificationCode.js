@@ -8,7 +8,7 @@
 // External Dependencies
 import crypto from 'crypto';
 
-// Generate Verification Code
+// Generate verification Token
 function generateVerificationToken(length = 6) {
     let code = '';
     while (code.length < length) {
@@ -18,5 +18,12 @@ function generateVerificationToken(length = 6) {
     return code;
 }
 
+function generateToken(length = 6) {
+    const buffer = crypto.randomBytes(length);
+    const token = buffer.toString('hex').slice(0, length);
+    return token;
+}
+
 // Export
-export default generateVerificationToken;
+export { generateToken, generateVerificationToken };
+

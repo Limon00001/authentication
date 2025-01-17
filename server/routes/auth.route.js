@@ -9,7 +9,7 @@
 import express from "express";
 
 // Internal Dependencies
-import { login, logout, signup, verifyEmail } from "../controllers/auth.controller.js";
+import { forgotPassword, login, logout, resetPassword, signup, verifyEmail } from "../controllers/auth.controller.js";
 
 // Router
 const authRouter = express.Router();
@@ -19,6 +19,8 @@ authRouter.post("/signup", signup);
 authRouter.post("/login", login);
 authRouter.post("/logout", logout);
 authRouter.post("/verify-email", verifyEmail);
+authRouter.post("/forgot-password", forgotPassword);
+authRouter.post("/reset-password/:token", resetPassword);
 
 // Export
 export default authRouter;
