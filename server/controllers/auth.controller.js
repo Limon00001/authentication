@@ -135,7 +135,90 @@ const verifyEmail = async (req, res) => {
             }
         });
     }
-}
+};
+
+// Login
+const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Validation
+        if (!email || !password) {
+            return res.status(400).json({
+                error: {
+                    success: false,
+                    message: "All fields are required"
+                }
+            });
+        }
+
+        // Check if user exists
+        const user = await User.findOne({ email });
+
+        // If user does not exist
+        if (!user) {
+            return res.status(400).json({
+                error: {
+                    success: false, 
+                    message: "User does not exist"
+                }
+            });
+        }
+
+        // Check if password is correct
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+        // If password is incorrect
+        if (!isPasswordCorrect) {
+            return res.status(400).json({
+                error: {
+                    success: false,
+                    message: "Incorrect password"
+                }
+            });
+        }
+
+        // Token and cookie
+        generateTokenAndSetCookie(user._id, res);
+
+        // Update last login
+        user.lastLogin = Date.now();
+
+        // Save the user 
+        await user.save();
+
+        // Remove password
+        user.password = undefined;
+
+        // Response
+        return res.status(200).json({
+            success: true,
+            message: "Logged in successfully",
+            user
+        });
+    } catch (error) {
+        // Response error
+        return res.status(400).json({
+            error: {
+                success: false,
+                message: error.message
+            }
+        })
+    }
+};
+
+// Logout
+const logout = async (req, res) => {
+    // Clear cookie
+    res.clearCookie('token');
+
+    // Response
+    return res.status(200).json({
+        success: true,
+        message: "Logged out successfully"
+    });
+};
 
 // Export
-export { signup, verifyEmail };
+export { login, logout, signup, verifyEmail };
+

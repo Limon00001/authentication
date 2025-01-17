@@ -9,13 +9,15 @@
 import express from "express";
 
 // Internal Dependencies
-import { signup, verifyEmail } from "../controllers/auth.controller.js";
+import { login, logout, signup, verifyEmail } from "../controllers/auth.controller.js";
 
 // Router
 const authRouter = express.Router();
 
 // Routes
 authRouter.post("/signup", signup);
+authRouter.post("/login", login);
+authRouter.post("/logout", logout);
 authRouter.post("/verify-email", verifyEmail);
 
 // Export

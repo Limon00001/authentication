@@ -66,3 +66,128 @@ Create a new user account.
 - A verification token is generated and stored
 - JWT token is set in HTTP-only cookie
 - Verification token expires after 24 hours
+
+## Email Verification Endpoint
+
+### POST `/api/auth/verify-email`
+
+Verify a user's email address using the verification code sent during registration.
+
+#### Request Body
+```json
+{
+    "code": "123456"    // Example of 6-digit verification code
+}
+```
+
+#### Required Fields
+- `code`: 6-digit verification code sent to user's email during registration
+
+#### Response
+
+##### Success (200 OK)
+```json
+{
+    "success": true,
+    "message": "Email verified successfully",
+    "user": {
+        "_id": "string",
+        "name": "string",
+        "email": "string",
+        "isVerified": true,
+        "lastLogin": "datetime",
+        "createdAt": "datetime",
+        "updatedAt": "datetime"
+    }
+}
+```
+
+##### Error Cases
+
+###### Invalid Verification Code (400 Bad Request)
+```json
+{
+    "error": {
+        "success": false,
+        "message": "Invalid verification code"
+    }
+}
+```
+
+###### Server Error (400 Bad Request)
+```json
+{
+    "error": {
+        "success": false,
+        "message": "Error message details"
+    }
+}
+```
+
+#### Verification Process
+1. User receives 6-digit code via email after registration
+2. Code must be submitted within 24 hours of registration
+3. Upon successful verification:
+   - User's email status is updated to verified
+   - Verification token is removed from user's record
+   - Welcome email is sent to the user
+   - User profile is returned in response
+
+#### Security Notes
+- Verification code expires after 24 hours
+- Code is single-use only
+- Invalid attempts are logged
+- Welcome email confirms successful verification
+
+## Login and Logout Endpoints
+
+### Login `/api/auth/login`
+- **Method**: `POST`
+- **Description**: Authenticates a user and returns a token in an HTTP-only cookie
+- **Request Body**:
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "yourpassword"
+  }
+  ```
+- **Success Response**:
+  - **Code**: 200
+  - **Content**:
+    ```json
+    {
+      "success": true,
+      "message": "Logged in successfully",
+      "user": {
+        "_id": "user_id",
+        "name": "User Name",
+        "email": "user@example.com",
+        "lastLogin": "2024-01-17T12:00:00.000Z"
+      }
+    }
+    ```
+- **Error Response**:
+  - **Code**: 400
+  - **Content**:
+    ```json
+    {
+      "error": {
+        "success": false,
+        "message": "All fields are required"
+      }
+    }
+    ```
+
+### Logout `/api/auth/logout`
+- **Method**: `POST`
+- **Description**: Logs out the user by clearing the authentication cookie
+- **Request Body**: None required
+- **Success Response**:
+  - **Code**: 200
+  - **Content**:
+    ```json
+    {
+      "success": true,
+      "message": "Logged out successfully"
+    }
+    ```
