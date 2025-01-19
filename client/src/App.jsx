@@ -10,6 +10,7 @@ import { Route, Routes } from 'react-router-dom';
 
 // Internal Dependencies
 import FloatingShape from './componenets/FloatingShape';
+import EmailVerificationPage from './pages/EmailVerificationPage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 
@@ -42,6 +43,7 @@ const App = () => {
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/email-verify" element={<EmailVerificationPage />} />
       </Routes>
     </div>
   );

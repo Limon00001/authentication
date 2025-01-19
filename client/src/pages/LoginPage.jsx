@@ -22,6 +22,7 @@ const LoginPage = () => {
   });
   const isLoading = false;
 
+  // Handle input
   const handleChange = (e) => {
     let { name, value } = e.target;
 
@@ -69,6 +70,7 @@ const LoginPage = () => {
           </div>
           <motion.button
             type="submit"
+            disabled={isLoading}
             className="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200"
           >
             {isLoading ? (
