@@ -9,11 +9,13 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FiUser } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { RiLoader4Fill } from 'react-icons/ri';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Internal Dependencies
 import Input from '../componenets/Input';
 import PasswordStrengthMeter from '../componenets/PasswordStrengthMeter';
+import { useAuthStore } from '../store/authStore';
 
 const SignUpPage = () => {
   const [input, setInput] = useState({
@@ -21,6 +23,9 @@ const SignUpPage = () => {
     email: '',
     password: '',
   });
+
+  const navigate = useNavigate();
+  const { signup, error, isLoading } = useAuthStore();
 
   // Input Handle
   const handleChange = (e) => {
@@ -30,6 +35,17 @@ const SignUpPage = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  // Submit Handle
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await signup(input.email, input.password, input.name);
+      navigate('/email-verify');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -43,7 +59,7 @@ const SignUpPage = () => {
         <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text">
           Create Account
         </h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <Input
             icon={FiUser}
             placeholder={'Full name'}
@@ -69,13 +85,19 @@ const SignUpPage = () => {
             onChange={handleChange}
           />
 
+          {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
           <PasswordStrengthMeter password={input.password} />
 
           <motion.button
             type="submit"
             className="mt-5 w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200"
+            disabled={isLoading}
           >
-            Sign Up
+            {isLoading ? (
+              <RiLoader4Fill className="animate-spin mx-auto" />
+            ) : (
+              'Sign Up'
+            )}
           </motion.button>
         </form>
       </div>

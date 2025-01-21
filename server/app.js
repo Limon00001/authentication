@@ -7,7 +7,7 @@
 
 // External Dependencies
 import cookieParser from 'cookie-parser';
-// import cors from "cors";
+import cors from 'cors';
 import express from 'express';
 
 // Internal Dependencies
@@ -16,10 +16,19 @@ import authRouter from './routes/auth.route.js';
 // App Initialize
 const app = express();
 
+// Allow frontend
+const allowedOrigins = [process.env.FRONTEND_URI];
+
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }),
+);
 
 // Routes
 app.use('/api/auth', authRouter);

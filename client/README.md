@@ -93,6 +93,124 @@ The UI is styled using:
 - Input sanitization is implemented
 - Secure password handling
 
+## _`Signup Functionality`_
+
+#### Overview
+
+The signup system provides a secure user registration process with real-time password validation, state management using Zustand, and integration with a backend API.
+
+#### Implementation Details
+
+##### State Management
+
+```jsx
+// Using Zustand for auth state
+const useAuthStore = create((set) => ({
+  user: null,
+  isAuthenticated: false,
+  error: null,
+  isLoading: false,
+  signup: async (email, password, name) => {
+    // Implementation details
+  },
+}));
+```
+
+#### Core Features
+
+- Secure user registration
+- Real-time password strength validation
+- Form state management
+- API integration
+- Error handling
+- Loading states
+- Navigation after successful signup
+
+#### Component Structure
+
+##### Form State Management
+
+```jsx
+const [input, setInput] = useState({
+  name: '',
+  email: '',
+  password: '',
+});
+const { signup, error, isLoading } = useAuthStore();
+```
+
+##### Form Submission
+
+```jsx
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await signup(input.email, input.password, input.name);
+    navigate('/email-verify');
+  } catch (error) {
+    console.error(error);
+  }
+};
+```
+
+#### Security Implementation
+
+##### Password Validation
+
+- Real-time strength meter
+- Multiple criteria checking:
+  - Minimum length
+  - Character types
+  - Special characters
+  - Case sensitivity
+
+##### API Security
+
+- CORS protection
+- Credentials handling
+- Error state management
+- Loading state indicators
+
+#### Integration Steps
+
+1. **Setup Auth Store**
+
+   - Initialize Zustand store
+   - Configure axios defaults
+   - Setup error handling
+
+2. **Component Implementation**
+
+   - Import required hooks and components
+   - Setup form state
+   - Implement submission handler
+   - Add validation logic
+
+3. **API Integration**
+   - Configure backend URL
+   - Handle response states
+   - Manage navigation flow
+
+#### Usage Example
+
+```jsx
+// In your component
+import { useAuthStore } from '../store/authStore';
+
+const SignUpPage = () => {
+  const { signup, error, isLoading } = useAuthStore();
+  // Implementation details
+};
+```
+
+#### Error Handling
+
+- Form validation errors
+- API response errors
+- Password strength feedback
+- Loading state management
+- User feedback through UI
+
 ## _`Login Page`_
 
 ### Features
