@@ -61,7 +61,7 @@ const EmailVerificationPage = () => {
       navigate('/');
       toast.success('Email verified successfully');
     } catch (error) {
-      console.log(error);
+      console.error(error.message);
     }
   };
 

@@ -14,13 +14,23 @@ import { Link } from 'react-router-dom';
 
 // Internal Dependencies
 import Input from '../componenets/Input';
+import { useAuthStore } from '../store/authStore';
 
 const LoginPage = () => {
   const [input, setInput] = useState({
     email: '',
     password: '',
   });
-  const isLoading = false;
+  const { isLoading, login, error } = useAuthStore();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await login(input.email, input.password);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
   // Handle input
   const handleChange = (e) => {
@@ -43,7 +53,7 @@ const LoginPage = () => {
         <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text">
           Welcome Back
         </h2>
-        <form>
+        <form onSubmit={handleLogin}>
           <Input
             icon={FiUser}
             placeholder={'Email Address'}
@@ -68,6 +78,11 @@ const LoginPage = () => {
               Forgot password?
             </Link>
           </div>
+          {error && (
+            <p className="text-red-500 text-center font-semibold mb-2">
+              {error}
+            </p>
+          )}
           <motion.button
             type="submit"
             disabled={isLoading}

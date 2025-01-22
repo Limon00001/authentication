@@ -44,7 +44,7 @@ const SignUpPage = () => {
       await signup(input.email, input.password, input.name);
       navigate('/email-verify');
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   };
 

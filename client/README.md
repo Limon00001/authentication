@@ -307,6 +307,47 @@ import { LoginPage, SignUpPage } from './pages';
 - User feedback mechanisms
 - Loading state management
 
+## _`Login System Functionality`_
+
+### Overview
+
+The login system provides secure user authentication with state management using Zustand, loading states, and error handling. It features a modern UI with toast notifications and protected route management.
+
+### Core Features
+
+- Secure user authentication
+- Error state management
+- Loading state indicators
+- Protected route handling
+- Automatic redirection
+- Session persistence
+
+### Security Features
+
+- Credential validation
+- Error handling with user feedback
+- Protected route middleware
+- Session management
+- CORS protection
+- Secure cookie handling
+
+### Integration Requirements
+
+- Zustand store configuration
+- Axios with credentials
+- React Router setup
+- Environment variables
+- Toast notifications
+
+### Usage Flow
+
+1. User enters credentials
+2. Loading state shown during authentication
+3. Error feedback for invalid credentials
+4. Automatic redirection on success
+5. Protected route access granted
+6. Session persistence maintained
+
 ## _`Email Verification Functionality`_
 
 #### Overview
