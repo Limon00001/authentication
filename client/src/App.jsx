@@ -6,11 +6,13 @@
  */
 
 // External Dependencies
+import { Toaster } from 'react-hot-toast';
 import { Route, Routes } from 'react-router-dom';
 
 // Internal Dependencies
 import FloatingShape from './componenets/FloatingShape';
 import EmailVerificationPage from './pages/EmailVerificationPage';
+import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 
@@ -40,11 +42,12 @@ const App = () => {
       />
 
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/email-verify" element={<EmailVerificationPage />} />
       </Routes>
+      <Toaster position="top-right" reverseOrder={true} />
     </div>
   );
 };

@@ -364,3 +364,48 @@ The email verification process works as follows:
 - **Floating Shapes**: Animated floating shapes are added to the background for visual appeal.
 - **Button State Styling**: The button has hover, focus, and disabled states to provide users with clear interaction cues.
 - **Animation**: Framer Motion is used to animate the appearance of the page and elements, creating a smooth and engaging user experience.
+
+## _`Email Verification System`_
+
+### Overview
+
+The email verification system implements secure user validation using Zustand state management and toast notifications for feedback. The system features a modern UI with real-time verification handling.
+
+### Key Features
+
+- 6-digit verification code input system
+- Automatic form submission
+- Toast notifications for success/error feedback
+- Loading state management
+- Error handling with user feedback
+- Navigation after successful verification
+
+### Technical Requirements
+
+- React Hot Toast for notifications
+- Zustand for state management
+- Axios for API calls
+- Environment variables for backend URL
+
+### Security Features
+
+- Input validation
+- Error state handling
+- Loading state indicators
+- Secure API integration
+- Session management
+
+### Environment Setup
+
+```properties
+VITE_BACKEND_URL=<backend_url>
+```
+
+### Usage Flow
+
+1. User submits signup form
+2. Redirected to verification page
+3. Enters 6-digit code
+4. Automatic or manual submission
+5. Toast notification feedback
+6. Navigation to home on success

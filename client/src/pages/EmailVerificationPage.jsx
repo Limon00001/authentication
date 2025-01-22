@@ -8,13 +8,17 @@
 // External Dependencies
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+
+// Internal Dependencies
+import { useAuthStore } from '../store/authStore';
 
 const EmailVerificationPage = () => {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
-  const isLoading = false;
+  const { error, isLoading, verifyEmail } = useAuthStore();
 
   const handleChange = (index, value) => {
     const newCode = [...code];
@@ -49,10 +53,16 @@ const EmailVerificationPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // const verificationCode = code.join('');
-    // alert(`Verification code submitted: ${verificationCode}`);
+    const verificationCode = code.join('');
+    try {
+      await verifyEmail(verificationCode);
+      navigate('/');
+      toast.success('Email verified successfully');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Auto submit when all fields are filled
@@ -91,6 +101,11 @@ const EmailVerificationPage = () => {
               />
             ))}
           </div>
+          {error && (
+            <p className="text-red-500 text-center font-semibold mt-2">
+              {error}
+            </p>
+          )}
           <motion.button
             type="submit"
             disabled={isLoading || code.some((digit) => !digit)}

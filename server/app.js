@@ -17,7 +17,7 @@ import authRouter from './routes/auth.route.js';
 const app = express();
 
 // Allow frontend
-const allowedOrigins = [process.env.FRONTEND_URI];
+const allowedOrigins = [process.env.FRONTEND_URL];
 
 // Middlewares
 app.use(express.json());
