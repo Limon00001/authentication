@@ -12,8 +12,6 @@ import { create } from 'zustand';
 // Cookies
 axios.defaults.withCredentials = true;
 
-console.log(import.meta.env.BACKEND_URL);
-
 const useAuthStore = create((set) => ({
   user: null,
   isAuthenticated: false,
@@ -57,6 +55,26 @@ const useAuthStore = create((set) => ({
         isLoading: false,
       });
       throw error;
+    }
+  },
+
+  checkAuth: async () => {
+    set({ isCheckingAuth: true, error: null });
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/check-auth`,
+      );
+      set({
+        user: response.data.user,
+        isAuthenticated: true,
+        isCheckingAuth: false,
+      });
+    } catch (error) {
+      set({
+        error: null,
+        isCheckingAuth: false,
+        isAuthenticated: false,
+      });
     }
   },
 }));

@@ -409,3 +409,49 @@ VITE_BACKEND_URL=<backend_url>
 4. Automatic or manual submission
 5. Toast notification feedback
 6. Navigation to home on success
+
+## _`Authentication System`_
+
+### Overview
+
+The authentication system implements protected routes, session management, and user verification status checking using Zustand store and React Router.
+
+### Key Features
+
+- Protected route management
+- Authentication state persistence
+- Email verification status checking
+- Automatic authentication checking
+- Route redirection based on auth status
+- Session management
+
+### Route Protection Features
+
+- Unauthenticated users redirected to login
+- Unverified users redirected to email verification
+- Authenticated users redirected from auth pages
+- Session persistence across page reloads
+
+### Authentication Flow
+
+1. App initialization triggers auth check
+2. Protected routes verify authentication status
+3. Unverified users complete email verification
+4. Authenticated users access protected content
+5. Session management handles persistence
+
+### Integration Requirements
+
+- Zustand store setup
+- Axios for API calls
+- React Router for navigation
+- Environment variables configuration
+- Toast notifications for feedback
+
+### Security Implementation
+
+- Automatic session verification
+- Protected route middleware
+- Secure cookie handling
+- CORS protection
+- Authentication state management
