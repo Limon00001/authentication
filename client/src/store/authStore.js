@@ -69,6 +69,25 @@ const useAuthStore = create((set) => ({
     }
   },
 
+  logout: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`);
+      set({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      set({
+        error: error.response.data.message || 'Logout failed',
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
+
   verifyEmail: async (code) => {
     set({ isLoading: true, error: null });
     try {

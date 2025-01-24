@@ -348,6 +348,51 @@ The login system provides secure user authentication with state management using
 5. Protected route access granted
 6. Session persistence maintained
 
+## _`Authentication Client`_
+
+## Features
+
+### Homepage Dashboard
+
+The homepage serves as a protected dashboard that displays user information and provides logout functionality.
+
+#### Key Features:
+
+- Protected route (requires authentication)
+- Displays user profile information:
+  - Name
+  - Email
+- Shows account activity:
+  - Account creation date
+  - Last login time
+- Animated UI components using Framer Motion
+- Responsive design with Tailwind CSS
+
+#### Required Components:
+
+- `HomePage.jsx`: Main dashboard component
+- `LoadingSpinner.jsx`: Loading state component
+- `authStore.js`: Authentication state management
+- `date.js`: Date formatting utility
+
+### Logout Functionality
+
+Secure logout implementation with state management using Zustand.
+
+#### Features:
+
+- Clears user session
+- Removes authentication tokens
+- Redirects to login page
+- Handles error states
+
+#### Technical Details:
+
+- Uses axios for API communication
+- Manages state through Zustand store
+- Handles errors with proper error messages
+- Cleans up user session data
+
 ## _`Email Verification Functionality`_
 
 #### Overview
